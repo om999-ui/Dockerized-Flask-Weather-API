@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather Prediction App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>🌤 Weather Predictor</h1>
+
+    <form action="/predict" method="POST">
+
+        <label>🌡 Temperature (°C)</label>
+        <input type="number" step="any" name="temperature" required>
+
+        <label>💧 Humidity (%)</label>
+        <input type="number" step="any" name="humidity" required>
+
+        <button type="submit">Predict Weather</button>
+
+    </form>
+
+    {% if prediction %}
+
+    <div class="result">
+        <h3>Prediction Result</h3>
+        <p>🌡 Predicted Temperature</p>
+        <h2>{{ prediction }} °C</h2>
+        <h3>{{ weather_status }}</h3>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="weatherChart"></canvas>
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% if prediction %}
+
+<script>
+
+const ctx = document.getElementById('weatherChart');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Temperature', 'Humidity', 'Prediction'],
+        datasets: [{
+    label: 'Weather Data',
+    data: [
+        parseFloat("{{ temp }}"),
+        parseFloat("{{ humidity }}"),
+        parseFloat("{{ prediction }}")
+    ],
+    backgroundColor: [
+        '#ff6b6b',
+        '#4ecdc4',
+        '#feca57'
+    ],
+    borderColor: [
+        '#ff6b6b',
+        '#4ecdc4',
+        '#feca57'
+    ],
+    borderWidth: 2
+}]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+</script>
+
+{% endif %}
+
+</body>
+</html>
